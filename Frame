@@ -1,0 +1,73 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+
+public class Frame{
+  private JFrame frame;
+  private RandomPanel panel1;
+  private RandomShape panel2;
+  
+  public Frame(){
+    frame = new JFrame();
+    panel1 = new RandomPanel();
+    panel2 = new RandomShape();
+    frame.setTitle("Project OOP-Random Art");
+    frame.setLocation(250,25);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JPanel button1 = new JPanel();
+    JPanel button2 = new JPanel();
+    frame.setLayout(new GridLayout(2, 1));
+    //JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, panel2);
+    //JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, panel2);
+    button1.add(getButton("RandomExpression"));
+    button2.add(getButton1("RandomShape"));
+    frame.add(panel1, BorderLayout.WEST);
+    frame.add(panel2, BorderLayout.EAST);
+    frame.add(button1, BorderLayout.SOUTH);
+    frame.add(button2, BorderLayout.SOUTH);
+    frame.setVisible(true);
+    frame.pack();
+    
+  }
+  
+  public JButton getButton(String label){
+    ImageIcon border = new ImageIcon("Triangle.png");
+    ImageIcon n = new ImageIcon("Girl.png");
+    JButton result = new JButton(label,n);
+    Border b = new MatteBorder(10, 10, 10, 10, border);
+    result.setBorder(b);
+    //Anonymous class to define behavior of button.
+    result.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+        String s = e.getActionCommand();
+        if(s.equals("RandomExpression")){
+          panel1.setToColor();
+        }
+        panel1.repaint();
+      }
+    });
+    return result;
+  }
+  
+  public JButton getButton1(String label){
+    ImageIcon border = new ImageIcon("Triangle.png");
+    ImageIcon n = new ImageIcon("Girl.png");
+    JButton result = new JButton(label,n);
+    Border b = new MatteBorder(10, 10, 10, 10, border);
+    result.setBorder(b);
+    //Anonymous class to define behavior of button.
+    result.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+        String s = e.getActionCommand();
+        if(s.equals("RandomShape")){
+          new RandomShape();
+        }
+        panel2.repaint();
+      }
+    });
+    return result;
+  }
+  
+}
+

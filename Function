@@ -1,0 +1,13 @@
+import java.lang.Math;
+
+public abstract class Function{
+  public double result;
+  public static final double PI = 3.14159265;
+  //public static final double LOG = 0;
+  //Constructor
+  public Function(){
+    result = 0;
+  }
+  public abstract double calculate(double op);
+  public abstract double calculate(double op1, double op2);
+}

@@ -1,0 +1,9 @@
+import java.awt.*; 
+import javax.swing.*; 
+import java.util.*;
+
+public interface RandomModel{
+  void randomRectangels(Graphics g);
+  void randomFigures(Graphics g);
+  String randomExpression(int currentLevel);
+}

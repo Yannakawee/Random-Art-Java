@@ -1,0 +1,63 @@
+import java.awt.*;
+import java.awt.geom.*;
+import javax.swing.*;
+
+public class RandomPanel extends JPanel{
+  //Create expression of each color.
+  private RandomExpression[] expressionOfEachColor;
+  private static final int RED = 0;
+  private static final int GREEN = 1;
+  private static final int BLUE = 2;
+  
+  public RandomPanel(){
+    setPreferredSize(new Dimension(300,300));
+    expressionOfEachColor = new RandomExpression[3];
+    for(int i = 0; i < expressionOfEachColor.length; i++)
+      expressionOfEachColor[i] = new RandomExpression();
+  }
+  
+  public void setToColor(){
+    for(int i = 0; i < expressionOfEachColor.length; i++)
+      expressionOfEachColor[i] = new RandomExpression();
+  }
+  
+  private int getShadeOfEachColor(double x, double y, RandomExpression exp){
+    double val = exp.evaluate(x, y);
+    int result = (int)((val + 1.0) / 2.0 * 256);
+    if(result >= 256){
+      result = 255;
+    }else{
+        result = result;
+    }
+    assert 0 <= result && result < 256 : result + " " + val;
+    return result;
+  }
+  
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    Graphics2D g2 = (Graphics2D)g;
+    double xVal = -1.0;
+    double yVal = -1.0;     
+    for(int x = 0; x < getWidth(); x++){
+      yVal = -1.0;
+      for(int y = 0; y < getHeight(); y++){
+        int red = getShadeOfEachColor(xVal, yVal, expressionOfEachColor[RED]);
+        int green = getShadeOfEachColor(xVal, yVal, expressionOfEachColor[GREEN]);
+        int blue = getShadeOfEachColor(xVal, yVal, expressionOfEachColor[BLUE]);
+        g2.setColor(new Color(red, green, blue));
+        Rectangle2D pixel = new Rectangle2D.Double(x, y, 1, 1);
+        g2.fill(pixel);
+        yVal = yVal +(2.0 / getHeight());
+      }
+      xVal = xVal +(2.0 / getWidth());
+    }
+    showExpression();
+  }
+  
+  public void showExpression(){
+    System.out.println("Red: " + expressionOfEachColor[RED]);
+    System.out.println("Green: " + expressionOfEachColor[GREEN]);
+    System.out.println("Blue: " + expressionOfEachColor[BLUE]);
+  }
+}
+

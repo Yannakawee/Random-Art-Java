@@ -1,0 +1,70 @@
+import java.awt.*; 
+import javax.swing.*; 
+import java.util.*;
+import java.util.Random;
+
+public class RandomShape extends JPanel implements RandomModel{
+  private static Random test;
+  private CosPi cos;
+  private SinPi sin;
+  
+  public RandomShape(){
+    test = new Random();
+    cos = new CosPi();
+    sin = new SinPi();
+  }
+  
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g); 
+    int artMode = test.nextInt(2);
+    if (artMode == 0) 
+      randomRectangels(g);
+    else
+      randomFigures(g);
+  }
+  
+  public String randomExpression(int currentLevel){
+    return null;
+  }
+  
+  public void randomRectangels(Graphics g) {
+    setCanvasColor(g);
+    for(int i = 1; i <= 150; i = i + 1) {
+      int b = test.nextInt(45) + (int)(10*(cos.calculate(Math.random()))) + 10;
+      int h = test.nextInt(45) + (int)(10*(sin.calculate(Math.random()))) + 10;
+      //int b = test.nextInt(45) + 15;
+      //int h = test.nextInt(45) + 15;
+      int x = test.nextInt(getWidth() - b);
+      int y = test.nextInt(getHeight() - h);
+      g.setColor(randomColor());
+      g.fillRect(x,y,b,h);
+    }
+  }
+  
+  public void randomFigures(Graphics g) {
+    setCanvasColor(g);
+    for(int i = 1; i <= 150; i = i + 1) {
+      int b = test.nextInt(45) + (int)(10*(cos.calculate(Math.random()))) + 10;
+      int h = test.nextInt(45) + (int)(10*(sin.calculate(Math.random()))) + 10;
+      //int b = test.nextInt(45) + 15;
+      //int h = test.nextInt(45) + 15;
+      int x = test.nextInt(getWidth() - b);
+      int y = test.nextInt(getHeight() - h);
+      g.setColor(randomColor());
+      int fig = test.nextInt(2);
+      if (fig == 0) 
+        g.fillRect(x,y,b,h);
+      else 
+        g.fillOval(x,y,b,h);
+    }
+  }
+  
+  private void setCanvasColor(Graphics g) {
+    g.setColor(randomColor());
+    g.fillRect(0,0,getWidth(), getHeight());
+  }
+  
+  private Color randomColor() {
+    return new Color(test.nextInt(256),test.nextInt(256 ), test.nextInt(256));
+  }
+}

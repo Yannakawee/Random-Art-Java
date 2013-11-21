@@ -1,0 +1,5 @@
+public class RandomArt{
+  public static void main(String[] args){
+    Frame dillAndPeet = new Frame();
+  }
+}

@@ -1,0 +1,130 @@
+import java.util.Stack;
+import java.awt.*; 
+import javax.swing.*; 
+import java.util.*;
+
+public class RandomExpression implements RandomModel{
+  private Cos cos;
+  private Sin sin;
+  private Average avg;
+  private final String expression;
+  private static final String OPERANDS = "xy";
+  private static final String OPERATORS = "SCAM";
+  //Functions that take a single operand
+  private static final String SINGLE_OPERAND_OPERATORS = "SC";
+  //Probability that operand will be another expression instead of a primitive
+  private final double PROBABILITY_DEEPER ;
+  private final int COMPLEXITY_OF_EXPRESSION ; 
+  private static final int DEFAULT_MAX_COMPLEXITY = 8;;
+  private static final double DEFAULT_PROBABILITY_DEEPER = 0.9;
+
+    
+  //Create a new RandomExpression
+  //with PROBABILITY_DEEPER = 0.8
+  //and EXPRESSION_COMPLEXITY = 10;
+  public RandomExpression(){
+    this(DEFAULT_MAX_COMPLEXITY, DEFAULT_PROBABILITY_DEEPER);
+    cos = new Cos();
+    sin = new Sin();
+    avg = new Average();
+  }
+  
+  //Pre-condition: DEFAULT_MAX_COMPLEXITY >= 0 and 0.0 <=PROBABILITY_DEEPER <= 1.0
+  //Notice!! Higher values for maxComplexity and deeper 
+  //will make program generate more complex expression.
+  //public RandomExpression(int complexity, double deeper){
+  public RandomExpression(int complexity, double deeper){
+    COMPLEXITY_OF_EXPRESSION = complexity;
+    PROBABILITY_DEEPER = deeper;
+    expression = randomExpression(0);
+  }
+  
+  private boolean isSingleOperandOperator(String operator) {
+        return SINGLE_OPERAND_OPERATORS.contains(operator);
+    }
+  
+  public String randomExpression(int currentLevel){
+    int op = (int)(Math.random() * OPERATORS.length());
+    int oper1 = (int)(Math.random() * 2);
+    int oper2 = (int)(Math.random() * 2);
+    String result = OPERATORS.substring(op, op + 1);
+    boolean deeperFirstOperand = Math.random() < PROBABILITY_DEEPER;
+    boolean deeperSecondOperand = Math.random() < PROBABILITY_DEEPER;
+    
+    // Single operand 
+    if(isSingleOperandOperator(result)){
+      //Base case, operands are simple values #that is x or y.
+      if(!deeperFirstOperand || currentLevel == COMPLEXITY_OF_EXPRESSION){
+        result = OPERANDS.charAt(oper1) +  result;
+      }
+      //Recursive case, operand is another expression
+      else{
+        result = randomExpression(currentLevel + 1) +  result;
+      }
+    }else{
+      //Two operands operators such as multiple or average
+      //Base case, operands are simple values #that is x or y.
+      if(currentLevel == COMPLEXITY_OF_EXPRESSION || (!deeperFirstOperand && !deeperSecondOperand)){
+        result = OPERANDS.charAt(oper1) + "" + OPERANDS.charAt(oper2) + result;
+      }
+      //First opearnd is simple value(x or y), second operand is another expression
+      else if(!deeperFirstOperand ){
+        result = OPERANDS.charAt(oper1) +  randomExpression(currentLevel + 1) + result;
+      }
+      //First operand is another expression, second operand is simple value(x or y).
+      else if(!deeperSecondOperand ){
+        result = randomExpression(currentLevel + 1) + OPERANDS.charAt(oper2) + result;
+      }
+      //Both operand are complexity expression(It isn't neither (x or y) or another expression).
+      else{
+        result = randomExpression(currentLevel + 1) + randomExpression(currentLevel + 1) + result;
+      }
+    }
+    return result;
+  }
+  
+  //Called to get result of expression at given value of x and y.
+  //Pre-condition: -1.0 <= x && y <= 1.0
+  //Post-condition: return a value between -1.0 and 1.0(Inclusive).
+  public double evaluate(double x, double y){
+    Stack<Double> operands = new Stack<Double>();
+    for(int i = 0; i < expression.length(); i++){
+      char ch = expression.charAt(i);
+      //In case of operand (x and y).
+      if(ch == 'x'){
+        operands.push(x);
+      }else if(ch == 'y'){
+        operands.push(y);
+      }else{
+        //In case of operator
+        double op1 = operands.pop();
+        //Try to use it for  more practise
+        switch (ch) {
+            case 'S':  operands.push(sin.calculate(op1));
+                     break;
+            case 'C':  operands.push(cos.calculate(op1));
+                     break;
+            case 'M':  operands.push(op1 * operands.pop());
+                     break;
+            case 'A':  operands.push(avg.calculate(op1, operands.pop()));
+                     break;
+            default: break;
+        }
+      }
+    }
+
+    double result = operands.pop();
+    result = (result < -1.0) ? -1.0 : (result > 1.0) ? 1.0 : result;
+    assert -1.0 <= result && result <= 1.0 : result;
+    return result;
+  }
+  
+   //Return expression.
+   public String toString(){
+    return expression;
+  }
+   public void randomRectangels(Graphics g){}
+   public void randomFigures(Graphics g){}
+
+}
+
